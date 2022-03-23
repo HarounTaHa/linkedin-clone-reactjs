@@ -2,12 +2,35 @@ import './Feed.css'
 import {Create, Image, Subscriptions, EventNote, CalendarViewDay} from '@mui/icons-material';
 import InputOption from "./InputOption";
 import Post from "./Post";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {db} from "./firebase";
+import {serverTimestamp} from 'firebase/firestore'
+import {onSnapshot, collection, query, addDoc,orderBy} from "firebase/firestore";
 
 export default function Feed() {
+    const [input, setInput] = useState('')
     const [posts, setPosts] = useState([])
+    const colRef = collection(db, "posts")
+
+    useEffect(() => {
+
+        onSnapshot(query(colRef,orderBy('timestamp','desc')), (querySnapshot) => {
+            setPosts(querySnapshot.docs.map(d => ({
+                    id: d.id,
+                    data: d.data()
+                }))
+            )
+        });
+    }, [])
     const sendPost = e => {
         e.preventDefault()
+        addDoc(colRef, {
+            name: 'Haroun Taha',
+            description: 'this is a test',
+            message: input,
+            photoUrl: 'https://yt3.ggpht.com/l7v-zBFR0tjtrs6B_S7r0pL_h7bgNO60f-n6CSj0WWozdynwTwz_7AwnkCipgkBTh5IpC44Ttw=s88-c-k-c0x00ffffff-no-rj-mo',
+            timestamp: serverTimestamp()
+        })
 
     };
     return (
@@ -16,7 +39,8 @@ export default function Feed() {
                 <div className='feed-input'>
                     <Create/>
                     <form>
-                        <input placeholder='start a post' type="text"/>
+                        <input value={input} onChange={e => setInput(e.target.value)} placeholder='start a post'
+                               type="text"/>
                         <button type='submit' onClick={sendPost}>
                             Send
                         </button>
@@ -30,10 +54,10 @@ export default function Feed() {
 
                 </div>
             </div>
-            {posts.map((post) => (
-                <Post/>
+            {posts.map(({id, data: {name, description, message, photoUrl}}) => (
+                <Post key={id} name={name} description={description} message={message}
+                      photoUrl={photoUrl}/>
             ))}
-            <Post name='Haroun Taha' description='dssdsdsdsd' message='I love you'
-                  photoUrl='https://yt3.ggpht.com/l7v-zBFR0tjtrs6B_S7r0pL_h7bgNO60f-n6CSj0WWozdynwTwz_7AwnkCipgkBTh5IpC44Ttw=s88-c-k-c0x00ffffff-no-rj-mo'/>
+
         </div>)
 }
