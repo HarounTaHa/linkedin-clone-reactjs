@@ -74,10 +74,13 @@
     background-color: white;
     border-radius: 10px;
     margin-top: 10px;
+
 }
 .sidebar-bottom > p {
-    font-size: 13px;
+    font-size: 15px;
     padding-bottom: 10px;
+    font-weight: 500;
+
 }
 .sidebar-recent-item {
     display: flex;
@@ -95,4 +98,10 @@
 .sidebar-hash{
     margin-left: 5px;
     margin-right: 10px;
+}
+.sidebar-recent-item{
+    margin-bottom: 7px;
+}
+.sidebar-recent-item >p{
+    font-size: 14px;
 }

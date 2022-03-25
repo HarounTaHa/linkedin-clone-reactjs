@@ -1,23 +1,22 @@
 import './Widgets.css'
-import {Info, FiberManualRecord} from '@mui/icons-material';
+import {Info} from '@mui/icons-material';
+import {useEffect, useState} from "react";
+import axios from "axios";
+import NewsArticle from "./NewsListItem";
+import FlipMove from "react-flip-move";
 
 export default function Widgets() {
+    const [news, setNews] = useState([])
 
-    const newsArticle = (heading, subtitle) => (
-        <div className='widgets-article'>
-            <div className="widget-article-left">
-                <FiberManualRecord/>
-            </div>
-            <div className="widget-article-right">
-                <h4>
-                    {heading}
-                </h4>
-                <p>
-                    {subtitle}
-                </p>
-            </div>
-        </div>
-    )
+    useEffect(() => {
+            axios.get('https://jsonplaceholder.typicode.com/posts').then((res) => {
+                setNews(res.data.slice(0, 8))
+            }).catch(err => {
+                alert(err)
+            })
+        }
+        , [])
+
     return (
         <div className='widgets'>
             <div className="widget-header">
@@ -26,7 +25,12 @@ export default function Widgets() {
                 </h2>
                 <Info/>
             </div>
-            {newsArticle('Haroun react is back','Top news - 9099 readers')}
+            <FlipMove>
+                {news && news.map(item =>
+
+                    <NewsArticle key={item.id} title={item.title.slice(0, 40)} body={item.body.slice(0, 90)}/>
+                )}
+            </FlipMove>
         </div>
 
     )

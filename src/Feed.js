@@ -25,7 +25,7 @@ export default function Feed() {
                 }))
             )
         });
-    }, [posts])
+    }, [])
     const sendPost = e => {
         e.preventDefault()
         addDoc(colRef, {
@@ -35,7 +35,7 @@ export default function Feed() {
             photoUrl: user.photoUrl || "",
             timestamp: serverTimestamp()
         })
-
+        setInput('')
     };
     return (
         <div className='feed'>
