@@ -5,7 +5,7 @@ import Post from "./Post";
 import {useEffect, useState} from "react";
 import {db} from "./firebase";
 import {serverTimestamp} from 'firebase/firestore'
-import {onSnapshot, collection, query, addDoc,orderBy} from "firebase/firestore";
+import {onSnapshot, collection, query, addDoc, orderBy} from "firebase/firestore";
 import {useSelector} from "react-redux";
 import {selectUser} from "./features/userSlice";
 import FlipMove from "react-flip-move";
@@ -18,12 +18,13 @@ export default function Feed() {
 
     useEffect(() => {
 
-        onSnapshot(query(collection(db, "posts"),orderBy('timestamp','desc')), (querySnapshot) => {
+        onSnapshot(query(collection(db, "posts"), orderBy('timestamp', 'desc')), (querySnapshot) => {
             setPosts(querySnapshot.docs.map(d => ({
                     id: d.id,
                     data: d.data()
-                }))
-            )
+                }
+            )))
+
         });
     }, [])
     const sendPost = e => {
@@ -32,6 +33,7 @@ export default function Feed() {
             name: user.displayName,
             description: user.email,
             message: input,
+            user: user.uid,
             photoUrl: user.photoUrl || "",
             timestamp: serverTimestamp()
         })
@@ -59,10 +61,10 @@ export default function Feed() {
                 </div>
             </div>
             <FlipMove>
-            {posts.map(({id, data: {name, description, message, photoUrl}}) => (
-                <Post key={id} name={name} description={description} message={message}
-                      photoUrl={photoUrl}/>
-            ))}
+                {posts.map(({id, data: {user, name, description, message, photoUrl}}) => (
+                    <Post key={id} postID = {id} userID={user ? user : null} name={name} description={description} message={message}
+                          photoUrl={photoUrl}/>
+                ))}
             </FlipMove>
 
         </div>)

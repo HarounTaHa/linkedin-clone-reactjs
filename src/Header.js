@@ -1,19 +1,60 @@
-import {Search, Home, SupervisorAccount, BusinessCenter, Chat, Notifications} from '@mui/icons-material';
+import {Search, Home, SupervisorAccount, BusinessCenter, Chat, Notifications, Logout,PersonOutline} from '@mui/icons-material';
 import './Header.css'
 import HeaderOption from "./HeaderOption";
 import {useDispatch, useSelector} from "react-redux";
 import {logout, selectUser} from "./features/userSlice";
 import {auth} from "./firebase";
 import {signOut} from 'firebase/auth'
+import {useState} from "react";
 
 export default function Header() {
     const user = useSelector(selectUser)
     const dispatch = useDispatch()
+    const [isDropdownOpend, setDropdownOpen] = useState(false);
+    const list = ['My Profile','Sign out']
+    const toggleDropDown = () => setDropdownOpen(!isDropdownOpend)
+
     const logoutOfApp = () => {
         dispatch(logout())
         signOut(auth)
+        setDropdownOpen(!isDropdownOpend)
     }
+
+    function renderSwitch(param) {
+        switch (param) {
+            case 'My Profile':
+                return (<li>< PersonOutline className='icon-menu'/><a onClick={null}>{param}</a></li>)
+            case 'Sign out':
+                return (<li><Logout className='icon-menu' /><a onClick={logoutOfApp}>{param}</a></li>)
+
+        }
+    }
+
+    const DropdwonList = () => (
+        <div className='drop-menu'>
+
+            <h3>
+                {user?user.displayName:'None'}
+                <br/>
+                <span>
+                    {user.email}
+                </span>
+
+            </h3>
+
+            <ul>
+                {list.map((item) => (
+
+                        renderSwitch(item)
+                    )
+                )}
+            </ul>
+        </div>
+    )
+
+
     return (
+        <>
         <div className='header'>
             <div className="header-left">
                 <img
@@ -31,12 +72,17 @@ export default function Header() {
                 <HeaderOption Icon={BusinessCenter} title='Jobs'/>
                 <HeaderOption Icon={Chat} title='Messaging'/>
                 <HeaderOption Icon={Notifications} title='Notifications'/>
+              <div className='profile'>
                 <HeaderOption
-                    onClick={logoutOfApp}
+                    onClick={toggleDropDown}
                     avatar={true}
-                    title={user ?user.displayName:''}/>
+                    title={user ? user.displayName : ''}/>
+              </div>
+                {isDropdownOpend ? DropdwonList() : false}
             </div>
         </div>
+
+        </>
     )
 
 }

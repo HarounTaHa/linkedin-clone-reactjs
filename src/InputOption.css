@@ -16,3 +16,20 @@
     margin-left: 5px;
 
 }
+.delete-option{
+    display: flex;
+    margin-top: 15px;
+    align-items: center;
+    color: gray;
+    padding: 10px;
+    cursor: pointer;
+    transition: 0.5s;
+    border-radius: 10px;
+
+}
+
+.delete-option:hover{
+  background: #f34541;
+    color: white!important;
+    transform: scale(1.1);
+}

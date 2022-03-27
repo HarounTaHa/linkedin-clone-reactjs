@@ -27,7 +27,6 @@ export default function Widgets() {
             </div>
             <FlipMove>
                 {news && news.map(item =>
-
                     <NewsArticle key={item.id} title={item.title.slice(0, 40)} body={item.body.slice(0, 90)}/>
                 )}
             </FlipMove>

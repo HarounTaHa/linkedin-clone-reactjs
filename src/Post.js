@@ -2,10 +2,13 @@ import './Post.css'
 import {forwardRef} from 'react'
 import {Avatar} from "@mui/material";
 import InputOption from "./InputOption";
-import {ChatOutlined, ShareOutlined, SendOutlined, ThumbUpAltOutlined} from "@mui/icons-material";
+import {ChatOutlined, ShareOutlined, SendOutlined, ThumbUpAltOutlined, Delete} from "@mui/icons-material";
+import {selectUser} from "./features/userSlice";
+import {useSelector} from "react-redux";
 
 
-const Post = forwardRef(({name, description, message, photoUrl},ref) => {
+const Post = forwardRef(({postID,userID, name, description, message, photoUrl}, ref) => {
+    const user = useSelector(selectUser)
     return (
         <div ref={ref} className='post'>
             <div className='post-header'>
@@ -30,7 +33,7 @@ const Post = forwardRef(({name, description, message, photoUrl},ref) => {
                 <InputOption title='Comment' color='gray' Icon={ChatOutlined}/>
                 <InputOption title='Share' color='gray' Icon={ShareOutlined}/>
                 <InputOption title='Send' color='gray' Icon={SendOutlined}/>
-
+                {user.uid === userID ? ( <InputOption postId={postID} title='Delete' color='gray' Icon={Delete}/>) : ''}
             </div>
         </div>
     )
