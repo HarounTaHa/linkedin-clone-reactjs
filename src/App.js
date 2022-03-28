@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import Header from "./Header";
 import Sidebar from "./Sidebar";
@@ -9,10 +9,12 @@ import Login from "./Login";
 import {auth} from "./firebase";
 import {onAuthStateChanged} from 'firebase/auth'
 import Widgets from "./Widgets";
+import LoadingPage from "./LoadingPage";
 
 function App() {
     const user = useSelector(selectUser)
     const dispatch = useDispatch()
+    const [loading, setLoading] = useState(true)
     useEffect(() => {
         onAuthStateChanged(auth, (userAuth) => {
             if (userAuth) {
@@ -22,8 +24,16 @@ function App() {
                     displayName: userAuth.displayName,
                     photoUrl: userAuth.photoURL
                 }))
+                setTimeout(()=>{
+                    setLoading(false)
+                },2000)
+
             } else {
                 dispatch(logout())
+                setTimeout(()=>{
+                    setLoading(false)
+                },2000)
+
             }
         })
     }, [])
@@ -31,14 +41,18 @@ function App() {
 
     return (
         <div className="app">
-            <Header/>
-            {!user ? <Login/> : (
-                <div className="app-body">
-                    <Sidebar/>
-                    <Feed/>
-                    <Widgets/>
-                </div>
-            )}
+            { !loading && <Header/>}
+            {
+                loading ? <LoadingPage loading={loading}/> :
+                    !user ? <Login/> : (
+                        <div className="app-body">
+                            <Sidebar/>
+                            <Feed/>
+                            <Widgets/>
+                        </div>
+                    )
+
+            }
 
         </div>
     );
