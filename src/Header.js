@@ -1,8 +1,18 @@
-import {Search, Home, SupervisorAccount, BusinessCenter, Chat, Notifications, Logout,PersonOutline} from '@mui/icons-material';
+import {
+    Search,
+    Home,
+    SupervisorAccount,
+    BusinessCenter,
+    Chat,
+    Notifications,
+    Logout,
+    PersonOutline
+} from '@mui/icons-material';
 import './Header.css'
 import HeaderOption from "./HeaderOption";
 import {useDispatch, useSelector} from "react-redux";
 import {logout, selectUser} from "./features/userSlice";
+import {nullValue, searchValue} from "./features/postSlice";
 import {auth} from "./firebase";
 import {signOut} from 'firebase/auth'
 import {useState} from "react";
@@ -11,7 +21,8 @@ export default function Header() {
     const user = useSelector(selectUser)
     const dispatch = useDispatch()
     const [isDropdownOpend, setDropdownOpen] = useState(false);
-    const list = ['My Profile','Sign out']
+    const list = ['My Profile', 'Sign out']
+    const [valueSearch, setValueSearch] = useState('')
     const toggleDropDown = () => setDropdownOpen(!isDropdownOpend)
 
     const logoutOfApp = () => {
@@ -25,7 +36,7 @@ export default function Header() {
             case 'My Profile':
                 return (<li>< PersonOutline className='icon-menu'/><a onClick={null}>{param}</a></li>)
             case 'Sign out':
-                return (<li><Logout className='icon-menu' /><a onClick={logoutOfApp}>{param}</a></li>)
+                return (<li><Logout className='icon-menu'/><a onClick={logoutOfApp}>{param}</a></li>)
 
         }
     }
@@ -34,7 +45,7 @@ export default function Header() {
         <div className='drop-menu'>
 
             <h3>
-                {user?user.displayName:'None'}
+                {user ? user.displayName : 'None'}
                 <br/>
                 <span>
                     {user.email}
@@ -52,36 +63,46 @@ export default function Header() {
         </div>
     )
 
+    const postSearch = (value) => {
+        dispatch(searchValue({vlaue: value}))
+    }
+
 
     return (
         <>
-        <div className='header'>
-            <div className="header-left">
-                <img
-                    src="https://content.linkedin.com/content/dam/me/business/en-us/amp/brand-site/v2/bg/LI-Bug.svg.original.svg"
-                    alt="logo"/>
-                <div className="header-search">
-                    <Search/>
-                    <input type="text" placeholder='Search'/>
+            <div className='header'>
+                <div className="header-left">
+                    <img
+                        src="https://content.linkedin.com/content/dam/me/business/en-us/amp/brand-site/v2/bg/LI-Bug.svg.original.svg"
+                        alt="logo"/>
+                    <div className="header-search">
+                        <Search/>
+                        <input value={valueSearch} onChange={e => {
+                            setValueSearch(e.target.value)
+                            if(e.target.value){
+                                 postSearch(e.target.value)
+                            }else {
+                                dispatch(nullValue())
+                            }
+                        }} type="text" placeholder='Search'/>
+                    </div>
+                </div>
+
+                <div className="header-right">
+                    <HeaderOption Icon={Home} title='Home'/>
+                    <HeaderOption Icon={SupervisorAccount} title='My Network'/>
+                    <HeaderOption Icon={BusinessCenter} title='Jobs'/>
+                    <HeaderOption Icon={Chat} title='Messaging'/>
+                    <HeaderOption Icon={Notifications} title='Notifications'/>
+                    <div className='profile'>
+                        <HeaderOption
+                            onClick={toggleDropDown}
+                            avatar={true}
+                            title={user ? user.displayName : ''}/>
+                    </div>
+                    {isDropdownOpend ? DropdwonList() : false}
                 </div>
             </div>
-
-            <div className="header-right">
-                <HeaderOption Icon={Home} title='Home'/>
-                <HeaderOption Icon={SupervisorAccount} title='My Network'/>
-                <HeaderOption Icon={BusinessCenter} title='Jobs'/>
-                <HeaderOption Icon={Chat} title='Messaging'/>
-                <HeaderOption Icon={Notifications} title='Notifications'/>
-              <div className='profile'>
-                <HeaderOption
-                    onClick={toggleDropDown}
-                    avatar={true}
-                    title={user ? user.displayName : ''}/>
-              </div>
-                {isDropdownOpend ? DropdwonList() : false}
-            </div>
-        </div>
-
         </>
     )
 

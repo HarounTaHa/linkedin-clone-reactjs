@@ -5,15 +5,18 @@ import Post from "./Post";
 import {useEffect, useState} from "react";
 import {db} from "./firebase";
 import {serverTimestamp} from 'firebase/firestore'
-import {onSnapshot, collection, query, addDoc, orderBy} from "firebase/firestore";
-import {useSelector} from "react-redux";
+import {onSnapshot, collection, query, addDoc, orderBy, startAt, endAt, getDocs} from "firebase/firestore";
+import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "./features/userSlice";
+import {selectPost} from "./features/postSlice";
 import FlipMove from "react-flip-move";
 
 export default function Feed() {
     const user = useSelector(selectUser)
+    const postSearchValue = useSelector(selectPost)
     const [input, setInput] = useState('')
     const [posts, setPosts] = useState([])
+    const [postsSearch, setPostsSearch] = useState([])
     const colRef = collection(db, "posts")
 
     useEffect(() => {
@@ -26,7 +29,34 @@ export default function Feed() {
             )))
 
         });
+
+
     }, [])
+
+    useEffect(() => {
+        if (postSearchValue) {
+            console.log(postSearchValue.vlaue)
+            getDocs(query(collection(db, "posts"), orderBy('message'), startAt(postSearchValue.vlaue), endAt(postSearchValue.vlaue + "\uf8ff")))
+                .then((dataSnapshot) => {
+                    console.log(dataSnapshot.docs)
+                    setPostsSearch(dataSnapshot.docs.map((doc) => (
+                                {
+                                    id: doc.id,
+                                    data: doc.data()
+                                }
+                            )
+                        )
+                    )
+
+                })
+            if (postSearchValue) {
+                console.log(postsSearch)
+            } else {
+                setPostsSearch([])
+            }
+        }
+    }, [postSearchValue])
+
     const sendPost = e => {
         e.preventDefault()
         addDoc(colRef, {
@@ -60,11 +90,20 @@ export default function Feed() {
 
                 </div>
             </div>
+
             <FlipMove>
-                {posts.map(({id, data: {user, name, description, message, photoUrl}}) => (
-                    <Post key={id} postID = {id} userID={user ? user : null} name={name} description={description} message={message}
-                          photoUrl={photoUrl}/>
-                ))}
+                {
+                    postSearchValue ? postsSearch.map(({id, data: {user, name, description, message, photoUrl}}) => (
+                            <Post key={id} postID={id} userID={user ? user : null} name={name} description={description}
+                                  message={message}
+                                  photoUrl={photoUrl}/>
+                        )) :
+                        posts.map(({id, data: {user, name, description, message, photoUrl}}) => (
+                            <Post key={id} postID={id} userID={user ? user : null} name={name} description={description}
+                                  message={message}
+                                  photoUrl={photoUrl}/>
+                        ))
+                }
             </FlipMove>
 
         </div>)

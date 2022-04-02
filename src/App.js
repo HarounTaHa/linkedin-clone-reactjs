@@ -41,7 +41,7 @@ function App() {
 
     return (
         <div className="app">
-            { !loading && <Header/>}
+            { (!loading && user) && <Header/>}
             {
                 loading ? <LoadingPage loading={loading}/> :
                     !user ? <Login/> : (
