@@ -11,7 +11,11 @@
     z-index: 999;
 
 }
-
+.head-menu{
+    align-items: center;
+    display: flex;
+    padding: 10px;
+}
 .drop-menu {
     position: absolute;
     top: 68px;
@@ -38,14 +42,14 @@
 
 }
 
-.drop-menu > h3 {
+.head-menu > h3 {
     width: 100%;
     text-align: center;
-    font-size: 18px;
-    padding: 20px 0;
+    font-size: 14px;
+    padding: 10px 0;
     font-weight: 500;
     color: #555;
-    line-height: 1.2em;
+    line-height: 1.4em;
 }
 
 .drop-menu > h3 > span {

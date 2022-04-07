@@ -13,6 +13,7 @@ export const postSlice = createSlice({
         nullValue: (state) => {
             state.post = null
         },
+
     },
 });
 

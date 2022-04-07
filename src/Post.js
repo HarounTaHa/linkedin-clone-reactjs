@@ -7,7 +7,7 @@ import {selectUser} from "./features/userSlice";
 import {useSelector} from "react-redux";
 
 
-const Post = forwardRef(({postID,userID, name, description, message, photoUrl}, ref) => {
+const Post = forwardRef(({postID,userID, name, description, message, photoUrl,photoPost}, ref) => {
     const user = useSelector(selectUser)
     return (
         <div ref={ref} className='post'>
@@ -24,9 +24,10 @@ const Post = forwardRef(({postID,userID, name, description, message, photoUrl}, 
 
             </div>
             <div className="post-body">
-                <p>
+                <p style={{marginLeft:20}}>
                     {message}
                 </p>
+                {photoPost && <div className='center-image'><img style={{marginTop:20}} width={500} height={400} src={photoPost} alt='photo-post'/></div>}
             </div>
             <div className="post-buttons">
                 <InputOption title='Like' color='gray' Icon={ThumbUpAltOutlined}/>

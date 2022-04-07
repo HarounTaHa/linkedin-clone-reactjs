@@ -25,7 +25,12 @@
     font-size: 15px;
     color: black;
 }
+.center-image{
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .post-info > p {
     font-size: 12px;
     color: gray;

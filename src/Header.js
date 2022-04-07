@@ -16,6 +16,7 @@ import {nullValue, searchValue} from "./features/postSlice";
 import {auth} from "./firebase";
 import {signOut} from 'firebase/auth'
 import {useState} from "react";
+import {Avatar} from "@mui/material";
 
 export default function Header() {
     const user = useSelector(selectUser)
@@ -43,15 +44,18 @@ export default function Header() {
 
     const DropdwonList = () => (
         <div className='drop-menu'>
-
-            <h3>
-                {user ? user.displayName : 'None'}
-                <br/>
-                <span>
+            <div className='head-menu'>
+                <Avatar src={user.photoUrl}>{user.displayName?user.displayName[0]:''}</Avatar>
+                <h3>
+                    {user ? user.displayName : 'None'}
+                    <br/>
+                    <span>
                     {user.email}
                 </span>
+                </h3>
 
-            </h3>
+            </div>
+
 
             <ul>
                 {list.map((item) => (
@@ -79,9 +83,9 @@ export default function Header() {
                         <Search/>
                         <input value={valueSearch} onChange={e => {
                             setValueSearch(e.target.value)
-                            if(e.target.value){
-                                 postSearch(e.target.value)
-                            }else {
+                            if (e.target.value) {
+                                postSearch(e.target.value)
+                            } else {
                                 dispatch(nullValue())
                             }
                         }} type="text" placeholder='Search'/>
