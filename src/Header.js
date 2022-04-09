@@ -17,6 +17,8 @@ import {auth} from "./firebase";
 import {signOut} from 'firebase/auth'
 import {useState} from "react";
 import {Avatar} from "@mui/material";
+import {Link} from "react-router-dom";
+import {useNavigate} from 'react-router-dom'
 
 export default function Header() {
     const user = useSelector(selectUser)
@@ -25,6 +27,7 @@ export default function Header() {
     const list = ['My Profile', 'Sign out']
     const [valueSearch, setValueSearch] = useState('')
     const toggleDropDown = () => setDropdownOpen(!isDropdownOpend)
+    const route = useNavigate()
 
     const logoutOfApp = () => {
         dispatch(logout())
@@ -35,7 +38,8 @@ export default function Header() {
     function renderSwitch(param) {
         switch (param) {
             case 'My Profile':
-                return (<li>< PersonOutline className='icon-menu'/><a onClick={null}>{param}</a></li>)
+                return (<li>< PersonOutline className='icon-menu'/><Link style={{textDecoration: "none",}}
+                                                                         to='/profile'>{param}</Link></li>)
             case 'Sign out':
                 return (<li><Logout className='icon-menu'/><a onClick={logoutOfApp}>{param}</a></li>)
 
@@ -45,7 +49,7 @@ export default function Header() {
     const DropdwonList = () => (
         <div className='drop-menu'>
             <div className='head-menu'>
-                <Avatar src={user.photoUrl}>{user.displayName?user.displayName[0]:''}</Avatar>
+                <Avatar src={user.photoUrl}>{user.displayName ? user.displayName[0] : ''}</Avatar>
                 <h3>
                     {user ? user.displayName : 'None'}
                     <br/>
@@ -93,7 +97,8 @@ export default function Header() {
                 </div>
 
                 <div className="header-right">
-                    <HeaderOption Icon={Home} title='Home'/>
+
+                    <HeaderOption onClick={() => route('/')} Icon={Home} title='Home'/>
                     <HeaderOption Icon={SupervisorAccount} title='My Network'/>
                     <HeaderOption Icon={BusinessCenter} title='Jobs'/>
                     <HeaderOption Icon={Chat} title='Messaging'/>

@@ -42,6 +42,7 @@
 
 }
 
+
 .head-menu > h3 {
     width: 100%;
     text-align: center;
@@ -89,9 +90,7 @@
     transition: 0.5s;
 }
 
-.profile {
 
-}
 
 .header-left > img {
     object-fit: contain;
